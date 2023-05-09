@@ -1,0 +1,17 @@
+{
+    "name": "thimote/site",
+    "autoload": {
+        "psr-4": {
+            "Thimote\\Site\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Waarrez",
+            "email": "thimote.cabotte6259@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.6"
+    }
+}
