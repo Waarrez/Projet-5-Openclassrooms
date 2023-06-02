@@ -1,0 +1,19 @@
+@startuml
+actor Utilisateur
+participant "Interface Utilisateur" as UI
+participant "Contrôleur d'Utilisateur" as UserController
+participant "Service d'Utilisateur" as UserService
+participant "Base de données" as Database
+
+Utilisateur -> UI: Remplit le formulaire d'inscription
+UI -> UserController: Demande d'inscription
+UserController -> UserService: Crée un nouvel utilisateur
+UserService -> Database: Enregistre les informations d'utilisateur
+
+activate UserController
+activate UserService
+UI -> UserController: Affiche un message de succès/échec
+deactivate UserController
+deactivate UserService
+
+@enduml

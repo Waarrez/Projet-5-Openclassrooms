@@ -1,0 +1,19 @@
+@startuml
+actor Utilisateur
+participant "Interface Utilisateur" as UI
+participant "Contrôleur d'Utilisateur" as UserController
+participant "Service d'Utilisateur" as UserService
+participant "Base de données" as Database
+
+Utilisateur -> UI: Entrez les informations de connexion
+UI -> UserController: Demande de connexion
+UserController -> UserService: Vérifie les informations de connexion
+UserService -> Database: Vérifie les informations d'utilisateur
+
+activate UserController
+activate UserService
+UI -> UserController: Affiche un message de succès/échec
+deactivate UserController
+deactivate UserService
+
+@enduml

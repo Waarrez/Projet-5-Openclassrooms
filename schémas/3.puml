@@ -1,0 +1,27 @@
+@startuml
+actor Utilisateur
+participant "Interface Utilisateur" as UI
+participant "Contrôleur d'Article" as ArticleController
+participant "Service d'Article" as ArticleService
+participant "Contrôleur de Commentaire" as CommentController
+participant "Service de Commentaire" as CommentService
+participant "Base de données" as Database
+
+Utilisateur -> UI: Rédige un commentaire sur un article
+UI -> CommentController: Demande de création de commentaire
+CommentController -> CommentService: Crée un nouveau commentaire
+CommentService -> Database: Enregistre le commentaire
+ArticleController -> ArticleService: Met à jour les commentaires de l'article
+ArticleService -> Database: Enregistre les modifications
+
+activate CommentController
+activate CommentService
+activate ArticleController
+activate ArticleService
+UI -> CommentController: Affiche un message de succès/échec
+deactivate CommentController
+deactivate CommentService
+deactivate ArticleController
+deactivate ArticleService
+
+@enduml

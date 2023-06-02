@@ -1,0 +1,19 @@
+@startuml
+actor Utilisateur
+participant "Interface Utilisateur" as UI
+participant "Contrôleur d'Article" as ArticleController
+participant "Service d'Article" as ArticleService
+participant "Base de données" as Database
+
+Utilisateur -> UI: Rédige un nouvel article
+UI -> ArticleController: Demande de création d'article
+ArticleController -> ArticleService: Crée un nouvel article
+ArticleService -> Database: Enregistre l'article
+
+activate ArticleController
+activate ArticleService
+UI -> ArticleController: Affiche un message de succès/échec
+deactivate ArticleController
+deactivate ArticleService
+
+@enduml
