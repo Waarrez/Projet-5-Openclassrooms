@@ -1,0 +1,47 @@
+@startuml
+
+!define ICONURL https://raw.githubusercontent.com/PlantUML/PlantUML/release/2.21.1/images/
+
+!define HEADER <b><font color="#2c3e50" size="20">Blog</font></b>\n<hr color="#2c3e50" size="4">
+
+!define FOOTER <font color="#2c3e50">PlantUML diagram by OpenAI ChatGPT</font>
+
+skinparam actor {
+    BackgroundColor #F0F0F0
+    BorderColor #2c3e50
+}
+
+skinparam rectangle {
+    BorderColor #2c3e50
+}
+
+title Blog - Diagramme de cas d'utilisation
+
+actor Utilisateur as user
+actor Administrateur as admin
+
+rectangle "Cas d'utilisation" as uc {
+    user --> (Consulter les articles)
+    user --> (Rechercher un article)
+    user --> (Commenter un article)
+    user --> (S'abonner)
+    user --> (Se désabonner)
+    user --> (S'authentifier)
+    user --> (S'inscrire)
+    user --> (Modifier son profil)
+    user --> (Réinitialiser son mot de passe)
+    user --> (Contacter l'administrateur)
+    user --> (Partager un article)
+
+    admin --> (Créer un article)
+    admin --> (Modifier un article)
+    admin --> (Supprimer un article)
+    admin --> (Valider les commentaires)
+    admin --> (Gérer les utilisateurs)
+}
+
+uc --> (Gérer les catégories)
+
+note right of uc: Les cas d'utilisation peuvent être\nétendus ou détaillés\nselon les besoins.
+
+@enduml

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'thimote/site',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '8bf5d4bad8f61ed83aec0cdf338114f04b36764e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'thimote/site' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '8bf5d4bad8f61ed83aec0cdf338114f04b36764e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
