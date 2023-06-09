@@ -1,0 +1,18 @@
+{
+    "name": "zitro/blog",
+    "autoload": {
+        "psr-4": {
+            "Zitro\\Blog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Warez-amasya",
+            "email": "thimote.cabotte6259@gmail.com"
+        }
+    ],
+    "require": {
+        "nikic/fast-route": "^1.3",
+        "twig/twig": "^3.6"
+    }
+}
