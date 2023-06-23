@@ -12,7 +12,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 });
 
 $httpMethod = filter_input(INPUT_SERVER, 'REQUEST_METHOD',  FILTER_SANITIZE_SPECIAL_CHARS);
-$uri = $_SERVER['REQUEST_URI'];
+$uri  = filter_input(INPUT_SERVER, 'REQUEST_URI',  FILTER_SANITIZE_SPECIAL_CHARS);
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 
