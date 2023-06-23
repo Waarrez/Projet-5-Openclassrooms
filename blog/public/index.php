@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 use Zitro\Blog\Controllers\HomeController;
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+$dispatcher = FastRoute\simpleDispatcher( function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/', [HomeController::class, 'index']);
     $r->addRoute('GET', '/articles', [HomeController::class, 'articles']);
     $r->addRoute('GET', '/login', [HomeController::class, 'login']);
@@ -24,5 +24,3 @@ $method = $handler[1];
 
 $controllerObject = new $controller();
 $controllerObject->$method($vars);
-
-
