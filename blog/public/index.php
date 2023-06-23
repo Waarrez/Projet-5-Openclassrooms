@@ -1,6 +1,6 @@
 <?php
 
-require '../vendor/autoload.php';
+require_once '../vendor/autoload.php';
 use Zitro\Blog\Controllers\HomeController;
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
