@@ -3,7 +3,7 @@
 declare (strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
-use RectorPrefix202306\Nette\Utils\Strings;
+use RectorPrefix202307\Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -15,7 +15,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
@@ -23,7 +22,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
-use RectorPrefix202306\Symfony\Contracts\Service\Attribute\Required;
+use RectorPrefix202307\Symfony\Contracts\Service\Attribute\Required;
 /**
  * @implements TypeMapperInterface<ObjectType>
  */
@@ -43,7 +42,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind) : TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type) : TypeNode
     {
         if ($type instanceof ShortenedObjectType) {
             return new IdentifierTypeNode($type->getClassName());
@@ -52,7 +51,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
             return new IdentifierTypeNode($type->getClassName());
         }
         if ($type instanceof GenericObjectType) {
-            return $this->mapGenericObjectType($type, $typeKind);
+            return $this->mapGenericObjectType($type);
         }
         if ($type instanceof NonExistingObjectType) {
             // possibly generic type
@@ -97,10 +96,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
     {
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    private function mapGenericObjectType(GenericObjectType $genericObjectType, string $typeKind) : TypeNode
+    private function mapGenericObjectType(GenericObjectType $genericObjectType) : TypeNode
     {
         $name = $this->resolveGenericObjectTypeName($genericObjectType);
         $identifierTypeNode = new IdentifierTypeNode($name);
@@ -110,7 +106,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
             if ($name === 'Iterator' && $genericType instanceof MixedType && $key === 0) {
                 continue;
             }
-            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType, $typeKind);
+            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType);
             $genericTypeNodes[] = $typeNode;
         }
         if ($genericTypeNodes === []) {

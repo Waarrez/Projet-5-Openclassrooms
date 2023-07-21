@@ -3,9 +3,9 @@
 declare (strict_types=1);
 namespace Rector\Parallel;
 
-use RectorPrefix202306\Clue\React\NDJson\Decoder;
-use RectorPrefix202306\Clue\React\NDJson\Encoder;
-use RectorPrefix202306\Nette\Utils\FileSystem;
+use RectorPrefix202307\Clue\React\NDJson\Decoder;
+use RectorPrefix202307\Clue\React\NDJson\Encoder;
+use RectorPrefix202307\Nette\Utils\FileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
@@ -18,9 +18,9 @@ use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
-use RectorPrefix202306\Symplify\EasyParallel\Enum\Action;
-use RectorPrefix202306\Symplify\EasyParallel\Enum\ReactCommand;
-use RectorPrefix202306\Symplify\EasyParallel\Enum\ReactEvent;
+use RectorPrefix202307\Symplify\EasyParallel\Enum\Action;
+use RectorPrefix202307\Symplify\EasyParallel\Enum\ReactCommand;
+use RectorPrefix202307\Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
 final class WorkerRunner
 {
@@ -107,7 +107,7 @@ final class WorkerRunner
                     $errorAndFileDiffs = $this->processFile($file, $configuration, $errorAndFileDiffs);
                     if ($errorAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
                         $this->invalidateFile($file);
-                    } elseif (!$configuration->isDryRun()) {
+                    } elseif (!$configuration->isDryRun() || $errorAndFileDiffs[Bridge::FILE_DIFFS] === []) {
                         $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
                     }
                 } catch (Throwable $throwable) {

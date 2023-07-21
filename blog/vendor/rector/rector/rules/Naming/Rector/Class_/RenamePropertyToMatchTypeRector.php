@@ -96,6 +96,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node) : ?Node
     {
+        $this->hasChanged = \false;
         $this->refactorClassProperties($node);
         $hasPromotedPropertyChanged = $this->propertyPromotionRenamer->renamePropertyPromotion($node);
         if ($this->hasChanged) {
@@ -113,7 +114,7 @@ CODE_SAMPLE
             if ($expectedPropertyName === null) {
                 continue;
             }
-            $propertyRename = $this->propertyRenameFactory->createFromExpectedName($property, $expectedPropertyName);
+            $propertyRename = $this->propertyRenameFactory->createFromExpectedName($classLike, $property, $expectedPropertyName);
             if (!$propertyRename instanceof PropertyRename) {
                 continue;
             }

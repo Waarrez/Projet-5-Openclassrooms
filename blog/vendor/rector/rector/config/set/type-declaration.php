@@ -1,7 +1,7 @@
 <?php
 
 declare (strict_types=1);
-namespace RectorPrefix202306;
+namespace RectorPrefix202307;
 
 use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
 use Rector\Config\RectorConfig;
@@ -15,6 +15,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnPar
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
@@ -28,6 +29,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRect
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
@@ -39,5 +41,5 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodRe
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
 use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 return static function (RectorConfig $rectorConfig) : void {
-    $rectorConfig->rules([AddClosureReturnTypeRector::class, AddArrowFunctionReturnTypeRector::class, ParamTypeByMethodCallTypeRector::class, TypedPropertyFromAssignsRector::class, ReturnAnnotationIncorrectNullableRector::class, VarAnnotationIncorrectNullableRector::class, ParamAnnotationIncorrectNullableRector::class, AddReturnTypeDeclarationBasedOnParentClassMethodRector::class, ReturnTypeFromStrictTypedPropertyRector::class, TypedPropertyFromStrictConstructorRector::class, ParamTypeFromStrictTypedPropertyRector::class, AddVoidReturnTypeWhereNoReturnRector::class, ReturnTypeFromReturnNewRector::class, TypedPropertyFromStrictGetterMethodReturnTypeRector::class, AddMethodCallBasedStrictParamTypeRector::class, ArrayShapeFromConstantArrayReturnRector::class, ReturnTypeFromStrictBoolReturnExprRector::class, ReturnTypeFromStrictNativeCallRector::class, ReturnTypeFromStrictNewArrayRector::class, ReturnTypeFromStrictScalarReturnExprRector::class, TypedPropertyFromStrictSetUpRector::class, ParamTypeByParentCallTypeRector::class, AddParamTypeSplFixedArrayRector::class, AddParamTypeBasedOnPHPUnitDataProviderRector::class, AddParamTypeFromPropertyTypeRector::class, AddReturnTypeDeclarationFromYieldsRector::class, ReturnTypeFromReturnDirectArrayRector::class, ReturnTypeFromStrictConstantReturnRector::class, ReturnTypeFromStrictTypedCallRector::class, ReturnNeverTypeRector::class, EmptyOnNullableObjectToInstanceOfRector::class, PropertyTypeFromStrictSetterGetterRector::class, ReturnTypeFromStrictTernaryRector::class, BoolReturnTypeFromStrictScalarReturnsRector::class]);
+    $rectorConfig->rules([AddClosureReturnTypeRector::class, AddArrowFunctionReturnTypeRector::class, ParamTypeByMethodCallTypeRector::class, TypedPropertyFromAssignsRector::class, ReturnAnnotationIncorrectNullableRector::class, VarAnnotationIncorrectNullableRector::class, ParamAnnotationIncorrectNullableRector::class, AddReturnTypeDeclarationBasedOnParentClassMethodRector::class, ReturnTypeFromStrictTypedPropertyRector::class, TypedPropertyFromStrictConstructorRector::class, ParamTypeFromStrictTypedPropertyRector::class, AddVoidReturnTypeWhereNoReturnRector::class, ReturnTypeFromReturnNewRector::class, TypedPropertyFromStrictGetterMethodReturnTypeRector::class, AddMethodCallBasedStrictParamTypeRector::class, ArrayShapeFromConstantArrayReturnRector::class, ReturnTypeFromStrictBoolReturnExprRector::class, ReturnTypeFromStrictNativeCallRector::class, ReturnTypeFromStrictNewArrayRector::class, ReturnTypeFromStrictScalarReturnExprRector::class, TypedPropertyFromStrictSetUpRector::class, ParamTypeByParentCallTypeRector::class, AddParamTypeSplFixedArrayRector::class, AddParamTypeBasedOnPHPUnitDataProviderRector::class, AddParamTypeFromPropertyTypeRector::class, AddReturnTypeDeclarationFromYieldsRector::class, ReturnTypeFromReturnDirectArrayRector::class, ReturnTypeFromStrictConstantReturnRector::class, ReturnTypeFromStrictTypedCallRector::class, ReturnNeverTypeRector::class, EmptyOnNullableObjectToInstanceOfRector::class, PropertyTypeFromStrictSetterGetterRector::class, ReturnTypeFromStrictTernaryRector::class, BoolReturnTypeFromStrictScalarReturnsRector::class, NumericReturnTypeFromStrictScalarReturnsRector::class, StrictArrayParamDimFetchRector::class]);
 };

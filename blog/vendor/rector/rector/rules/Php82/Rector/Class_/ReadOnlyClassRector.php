@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace Rector\Php82\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -96,8 +97,6 @@ CODE_SAMPLE
             return null;
         }
         $this->visibilityManipulator->makeReadonly($node);
-        // invoke reprint with correct readonly newline
-        $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
         if ($constructClassMethod instanceof ClassMethod) {
             foreach ($constructClassMethod->getParams() as $param) {
@@ -106,6 +105,10 @@ CODE_SAMPLE
         }
         foreach ($node->getProperties() as $property) {
             $this->visibilityManipulator->removeReadonly($property);
+        }
+        if ($node->attrGroups !== []) {
+            // invoke reprint with correct readonly newline
+            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
         return $node;
     }
@@ -237,7 +240,10 @@ CODE_SAMPLE
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return \true;
         }
-        return $this->phpAttributeAnalyzer->hasPhpAttribute($class, AttributeName::ALLOW_DYNAMIC_PROPERTIES);
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, AttributeName::ALLOW_DYNAMIC_PROPERTIES)) {
+            return \true;
+        }
+        return $class->extends instanceof FullyQualified && !$this->reflectionProvider->hasClass($class->extends->toString());
     }
     /**
      * @param Param[] $params

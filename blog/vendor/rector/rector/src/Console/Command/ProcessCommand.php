@@ -19,9 +19,9 @@ use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
-use RectorPrefix202306\Symfony\Component\Console\Application;
-use RectorPrefix202306\Symfony\Component\Console\Input\InputInterface;
-use RectorPrefix202306\Symfony\Component\Console\Output\OutputInterface;
+use RectorPrefix202307\Symfony\Component\Console\Application;
+use RectorPrefix202307\Symfony\Component\Console\Input\InputInterface;
+use RectorPrefix202307\Symfony\Component\Console\Output\OutputInterface;
 final class ProcessCommand extends \Rector\Core\Console\Command\AbstractProcessCommand
 {
     /**
@@ -112,6 +112,10 @@ final class ProcessCommand extends \Rector\Core\Console\Command\AbstractProcessC
         $paths = $configuration->getPaths();
         // 1. add files and directories to static locator
         $this->dynamicSourceLocatorDecorator->addPaths($paths);
+        if ($this->dynamicSourceLocatorDecorator->isPathsEmpty()) {
+            $this->rectorOutputStyle->error('The given paths do not match any files');
+            return ExitCode::FAILURE;
+        }
         // 2. inform user about registering configurable rule without configuration
         $this->emptyConfigurableRectorChecker->check();
         // MAIN PHASE

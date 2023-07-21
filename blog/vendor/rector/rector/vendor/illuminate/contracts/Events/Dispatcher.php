@@ -1,6 +1,6 @@
 <?php
 
-namespace RectorPrefix202306\Illuminate\Contracts\Events;
+namespace RectorPrefix202307\Illuminate\Contracts\Events;
 
 interface Dispatcher
 {
@@ -31,7 +31,7 @@ interface Dispatcher
      *
      * @param  string|object  $event
      * @param  mixed  $payload
-     * @return array|null
+     * @return mixed
      */
     public function until($event, $payload = []);
     /**

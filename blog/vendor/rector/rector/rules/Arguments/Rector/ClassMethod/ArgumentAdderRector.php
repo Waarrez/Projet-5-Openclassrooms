@@ -29,7 +29,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use RectorPrefix202306\Webmozart\Assert\Assert;
+use RectorPrefix202307\Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\ArgumentAdderRectorTest
  */
@@ -229,8 +229,21 @@ CODE_SAMPLE
         if (isset($node->args[$position])) {
             return \true;
         }
-        // is correct scope?
-        return !$this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
+        // Check if default value is the same
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
+        if (!$classMethod instanceof ClassMethod) {
+            // is correct scope?
+            return !$this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
+        }
+        if (!isset($classMethod->params[$position])) {
+            // is correct scope?
+            return !$this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
+        }
+        if ($this->changedArgumentsDetector->isDefaultValueChanged($classMethod->params[$position], $argumentAdder->getArgumentDefaultValue())) {
+            // is correct scope?
+            return !$this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
+        }
+        return \true;
     }
     /**
      * @param mixed $defaultValue

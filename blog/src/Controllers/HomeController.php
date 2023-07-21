@@ -2,24 +2,21 @@
 
 namespace Zitro\Blog\Controllers;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Setup;
+use BDD;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
-use Zitro\Blog\Entity\User;
 
 class HomeController
 {
-    private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
+    private $bdd;
+
+    public function __construct(BDD $bdd) {
+        $this->bdd = $bdd;
     }
-
 
     /**
      * @throws SyntaxError
@@ -31,12 +28,8 @@ class HomeController
         $loader = new FilesystemLoader('../src/templates');
         $twig = new Environment($loader);
 
-        $metadata = $this->entityManager->getClassMetadata(User::class);
-
-        dump($metadata);
-
         // Chargement du template
-        $template = $twig->load('pages/accueil.html.twig');
+        $template = $twig->load('pages/accueil.twig');
 
         // Affichage du template
         echo $template->render([
@@ -52,14 +45,24 @@ class HomeController
     public function articles(): void
     {
         $loader = new FilesystemLoader('../src/templates');
-        $twig = new Environment($loader);
+        $twig = new Environment($loader, [
+            'cache' => false,
+            'strict_variables' => false,
+            'debug' => true,
+        ]);
+
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
+
+        $result = $this->bdd->query("SELECT * FROM article");
+        $articles = $result->fetch_all(MYSQLI_ASSOC);
 
         // Chargement du template
-        $template = $twig->load('pages/articles.html.twig');
+        $template = $twig->load('pages/articles.twig');
 
         // Affichage du template
         echo $template->render([
             'titre' => 'Mon Blog | Articles',
+            'article' => $articles
         ]);
     }
 
@@ -74,7 +77,7 @@ class HomeController
         $twig = new Environment($loader);
 
         // Chargement du template
-        $template = $twig->load('pages/login.html.twig');
+        $template = $twig->load('pages/login.twig');
 
         // Affichage du template
         echo $template->render([
@@ -93,7 +96,7 @@ class HomeController
         $twig = new Environment($loader);
 
         // Chargement du template
-        $template = $twig->load('pages/register.html.twig');
+        $template = $twig->load('pages/register.twig');
 
         // Affichage du template
         echo $template->render([

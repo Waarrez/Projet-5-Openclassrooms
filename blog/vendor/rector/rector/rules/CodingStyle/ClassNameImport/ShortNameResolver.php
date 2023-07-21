@@ -3,7 +3,7 @@
 declare (strict_types=1);
 namespace Rector\CodingStyle\ClassNameImport;
 
-use RectorPrefix202306\Nette\Utils\Reflection;
+use RectorPrefix202307\Nette\Utils\Reflection;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -25,7 +25,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use ReflectionClass;
-use RectorPrefix202306\Symfony\Contracts\Service\Attribute\Required;
+use RectorPrefix202307\Symfony\Contracts\Service\Attribute\Required;
 /**
  * @see \Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\ShortNameResolverTest
  */
@@ -102,13 +102,18 @@ final class ShortNameResolver
      * Collects all "class <SomeClass>", "trait <SomeTrait>" and "interface <SomeInterface>"
      * @return string[]
      */
-    public function resolveShortClassLikeNamesForNode(Node $node) : array
+    public function resolveShortClassLikeNames(File $file) : array
     {
-        $namespace = $this->betterNodeFinder->findParentType($node, Namespace_::class);
-        if (!$namespace instanceof Namespace_) {
-            // only handle namespace nodes
+        $newStmts = $file->getNewStmts();
+        /** @var Namespace_[] $namespaces */
+        $namespaces = \array_filter($newStmts, static function (Stmt $stmt) : bool {
+            return $stmt instanceof Namespace_;
+        });
+        if (\count($namespaces) !== 1) {
+            // only handle single namespace nodes
             return [];
         }
+        $namespace = \current($namespaces);
         /** @var ClassLike[] $classLikes */
         $classLikes = $this->betterNodeFinder->findInstanceOf($namespace, ClassLike::class);
         $shortClassLikeNames = [];

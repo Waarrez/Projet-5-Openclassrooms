@@ -3,7 +3,7 @@
 declare (strict_types=1);
 namespace Rector\CodingStyle\Application;
 
-use RectorPrefix202306\Nette\Utils\Strings;
+use RectorPrefix202307\Nette\Utils\Strings;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Type\ObjectType;
 use Rector\CodingStyle\ClassNameImport\UsedImportsResolver;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -39,7 +40,7 @@ final class UseImportsAdder
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
      * @return Stmt[]
      */
-    public function addImportsToStmts(array $stmts, array $useImportTypes, array $functionUseImportTypes) : array
+    public function addImportsToStmts(FileWithoutNamespace $fileWithoutNamespace, array $stmts, array $useImportTypes, array $functionUseImportTypes) : array
     {
         $existingUseImportTypes = $this->usedImportsResolver->resolveForStmts($stmts);
         $existingFunctionUseImports = $this->usedImportsResolver->resolveFunctionImportsForStmts($stmts);
@@ -60,12 +61,16 @@ final class UseImportsAdder
                 }
                 $this->mirrorUseComments($stmts, $newUses, $key + 1);
                 \array_splice($stmts, $key + 1, 0, $nodesToAdd);
-                return $stmts;
+                $fileWithoutNamespace->stmts = $stmts;
+                $fileWithoutNamespace->stmts = \array_values($fileWithoutNamespace->stmts);
+                return $fileWithoutNamespace->stmts;
             }
         }
         $this->mirrorUseComments($stmts, $newUses);
         // make use stmts first
-        return \array_merge($newUses, $stmts);
+        $fileWithoutNamespace->stmts = \array_merge($newUses, $stmts);
+        $fileWithoutNamespace->stmts = \array_values($fileWithoutNamespace->stmts);
+        return $fileWithoutNamespace->stmts;
     }
     /**
      * @param FullyQualifiedObjectType[] $useImportTypes
@@ -74,7 +79,7 @@ final class UseImportsAdder
     public function addImportsToNamespace(Namespace_ $namespace, array $useImportTypes, array $functionUseImportTypes) : void
     {
         $namespaceName = $this->getNamespaceName($namespace);
-        $existingUseImportTypes = $this->usedImportsResolver->resolveForNode($namespace);
+        $existingUseImportTypes = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
         $existingFunctionUseImportTypes = $this->usedImportsResolver->resolveFunctionImportsForStmts($namespace->stmts);
         $existingUseImportTypes = $this->typeFactory->uniquateTypes($existingUseImportTypes);
         $useImportTypes = $this->diffFullyQualifiedObjectTypes($useImportTypes, $existingUseImportTypes);
@@ -85,6 +90,7 @@ final class UseImportsAdder
         }
         $this->mirrorUseComments($namespace->stmts, $newUses);
         $namespace->stmts = \array_merge($newUses, $namespace->stmts);
+        $namespace->stmts = \array_values($namespace->stmts);
     }
     /**
      * @param Stmt[] $stmts
