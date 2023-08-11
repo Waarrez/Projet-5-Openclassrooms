@@ -5,10 +5,8 @@ class User {
   - username: string
   - email: string
   - password: string
-  + getId(): int
-  + getUsername(): string
-  + getEmail(): string
-  + setEmail(email: string): void
+  - confirmAccount : string
+  - roles : string
 }
 
 class Article {
@@ -17,11 +15,6 @@ class Article {
   - content: string
   - publishedAt: datetime
   - author: User
-  + getId(): int
-  + getTitle(): string
-  + getContent(): string
-  + getPublishedAt(): datetime
-  + getAuthor(): User
 }
 
 class Comment {
@@ -30,11 +23,6 @@ class Comment {
   - postedAt: datetime
   - article: Article
   - author: User
-  + getId(): int
-  + getContent(): string
-  + getPostedAt(): datetime
-  + getArticle(): Article
-  + getAuthor(): User
 }
 
 User --> "*" Article

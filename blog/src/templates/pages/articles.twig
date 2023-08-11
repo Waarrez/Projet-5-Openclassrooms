@@ -5,6 +5,8 @@
     <div class="container-fluid m-5 text-center">
         <h1>Liste des articles</h1>
 
+        {{ dump(article) }}
+
         {% for articles in article %}
             <div class="mt-5 text-center">
                 <h2>{{ articles.title }}</h2>
