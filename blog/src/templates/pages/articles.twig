@@ -9,8 +9,11 @@
             <div class="mt-5 text-center">
                 <h2>{{ articles.title }}</h2>
                 <p>{{ articles.content }}</p>
-                <p>{{ articles.createdAt|date('d-m-Y') }}</p>
+                <p>Créer le : {{ articles.createdAt|date('d-m-Y') }}</p>
                 <a href="/article/{{ articles.id }}">Voir l'article</a>
+                {% if articles.author_id == users.id %}
+                    <a href="/article/modify/{{ articles.id }}">Modifier l'article</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

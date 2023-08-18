@@ -255,6 +255,51 @@ class HomeController
         echo $template->render(['titre' => $titre]);
     }
 
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    public function modifyArticle($id): void
+    {
+        $loader = new FilesystemLoader('../src/templates');
+        $twig = new Environment($loader, [
+            'cache' => false,
+            'strict_variables' => false,
+            'debug' => true,
+        ]);
+
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
+
+        // Chargement du template
+        $template = $twig->load('pages/modify_article.twig');
+
+        // Définir la variable "titre" utilisée dans le fichier "base.html.twig"
+        $titre = "Modifier un article";
+
+        $article = null;
+        $idArticle = null;
+
+        foreach ($id as $identifiant) {
+            $result = $this->bdd->query("SELECT * FROM article WHERE id = $identifiant");
+            $article = $result->fetch_assoc();
+            $idArticle = $identifiant;
+        }
+
+        if($_SERVER["REQUEST_METHOD"] === "POST") {
+            $title = $_POST["title"];
+            $content = $_POST["content"];
+
+            $this->bdd->query("UPDATE article SET title = '$title', content = '$content' WHERE id = $idArticle");
+            header("Location: /articles"); // Correction ici
+            exit(); // Assurez-vous de quitter le script après la redirection
+            // Maintenant vous pouvez utiliser $title et $content en toute sécurité
+        }
+
+        // Afficher le template rendu avec la variable "titre"
+        echo $template->render(['titre' => $titre, 'article' => $article]);
+    }
+
 
     public function loginUser(): void
     {
