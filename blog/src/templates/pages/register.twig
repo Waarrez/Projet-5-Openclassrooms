@@ -2,23 +2,31 @@
 
 {% block body %}
 
-    <h1>Register</h1>
+    <h1>Inscription</h1>
 
     <div class="container text-center">
         <form action="/register" method="post">
-            <label>Email
-                <input class="form-control" type="email" placeholder="Votre nom d'utilisateur" name="email" required>
-            </label>
-            <label>Nom d'utilisateur
-                <input class="form-control" type="text" placeholder="Votre nom d'utilisateur" name="username" required>
-            </label>
-            <label>Mot de passe
-                <input class="form-control" type="password" placeholder="Votre nom d'utilisateur" name="password" required>
-            </label>
-            <label>Confirmer mot de passe
-                <input class="form-control" type="password" placeholder="Votre nom d'utilisateur" name="confirmPassword" required>
-            </label>
-            <input class="btn btn-primary" type="submit" value="S'inscrire">
+            <div class="form-group">
+                <label>Email
+                    <input class="form-control" type="email" placeholder="Votre nom d'utilisateur" name="email" required>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Nom d'utilisateur
+                    <input class="form-control" type="text" placeholder="Votre nom d'utilisateur" name="username" required>
+                </label>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe
+                    <input class="form-control" type="password" placeholder="Votre nom d'utilisateur" name="password" required>
+                </label>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" placeholder="Confirmer mot de passe" name="confirmPassword" required>
+            </div>
+            <div class="form-group">
+                <input class="btn btn-primary" type="submit" value="S'inscrire">
+            </div>
         </form>
     </div>
 {% endblock %}

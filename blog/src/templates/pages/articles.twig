@@ -4,14 +4,13 @@
 
     <div class="container-fluid m-5 text-center">
         <h1>Liste des articles</h1>
-
-        {{ dump(article) }}
-
+        <a class="btn btn-primary" href="/article/add">Ajouter un article</a>
         {% for articles in article %}
             <div class="mt-5 text-center">
                 <h2>{{ articles.title }}</h2>
                 <p>{{ articles.content }}</p>
                 <p>{{ articles.createdAt|date('d-m-Y') }}</p>
+                <a href="/article/{{ articles.id }}">Voir l'article</a>
             </div>
         {% endfor %}
     </div>

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5 text-center">
+        <h2>Ajouter un article</h2>
+        <form method="POST" action="">
+            <div class="mt-5 form-group">
+                <label for="">Titre de l'article</label>
+                <input type="text" class="form-control form-control-md" name="title"/>
+            </div>
+            <div class="mt-5 form-group">
+                <label for="">Contenu de l'article</label>
+                <textarea name="content" class="form-control form-control-md"></textarea>
+            </div>
+            <div class="mt-5 form-group">
+                <input type="submit" class="btn btn-lg btn-primary" value="Ajouter un article"/>
+            </div>
+        </form>
+    </div>
+{% endblock %}
