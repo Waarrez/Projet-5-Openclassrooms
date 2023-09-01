@@ -117,10 +117,41 @@ class HomeController
         ]);
 
         $article = null;
+        $comments = null;
+        $users = array();
 
         foreach ($id as $identifiant) {
             $result = $this->bdd->query("SELECT * FROM article WHERE id = $identifiant");
+            $resultComment = $this->bdd->query("SELECT * FROM comment WHERE article_id = $identifiant");
             $article = $result->fetch_assoc();
+            $comments = $resultComment->fetch_all();
+
+            foreach ($comments as $comment) {
+                $authorId = $comment[4];
+                $user = $this->bdd->query("SELECT username FROM user WHERE id = $authorId ");
+                $authorInfo = $user->fetch_assoc();
+
+                if ($authorInfo) { // Vérifiez si des informations d'utilisateur ont été trouvées
+                    $username = $authorInfo['username'];
+                    $users[] = $username;
+                }
+            }
+        }
+
+        // Ajout d'un commentaire
+        if($_SERVER["REQUEST_METHOD"] === "POST") {
+            if($_POST["comment"] !== null) {
+                $comment = $_POST["comment"];
+                $postedAt = new \DateTimeImmutable();
+                $format = $postedAt->format('Y-m-d');
+                $user_id = $_SESSION["user_id"];
+                $article_id = $article["id"];
+
+                $result = $this->bdd->query("INSERT INTO comment (content, postedAt, article_id, author_id) VALUES ('$comment', '$format', '$article_id' ,'$user_id')");
+                if($result === TRUE) {
+                    header("Location: /");
+                }
+            }
         }
 
         $twig->addExtension(new \Twig\Extension\DebugExtension());
@@ -130,7 +161,9 @@ class HomeController
 
         echo $template->render([
             'titre' => 'Mon Blog | Articles',
-            'article' => $article
+            'article' => $article,
+            'comments' => $comments,
+            'users' => $users
         ]);
     }
 
@@ -227,13 +260,9 @@ class HomeController
         $loader = new FilesystemLoader('../src/templates');
         $twig = new Environment($loader);
 
-        // Chargement du template
         $template = $twig->load('pages/add_article.twig');
 
-        // Définir la variable "titre" utilisée dans le fichier "base.html.twig"
         $titre = "Ajouter un article";
-
-
 
         if([$_SERVER["REQUEST_METHOD"] === "POST"]) {
             if (isset($_POST["title"]) && isset($_POST["content"])) {
@@ -245,13 +274,11 @@ class HomeController
                 $authorId = $_SESSION["user_id"];
 
                 $this->bdd->query("INSERT INTO article (title, content, publishedAt, author_id) VALUES ('$title', '$content', '$format', '$authorId')");
-                header("Location: /"); // Correction ici
-                exit(); // Assurez-vous de quitter le script après la redirection
-                // Maintenant vous pouvez utiliser $title et $content en toute sécurité
+                header("Location: /articles");
+                exit();
             }
         }
 
-        // Afficher le template rendu avec la variable "titre"
         echo $template->render(['titre' => $titre]);
     }
 
@@ -316,7 +343,7 @@ class HomeController
 
                 // Vérifier le mot de passe
                 if (password_verify($password, $hashPasswordFromDatabase)) {
-                    if($row["confirmAccount"] !== null) {
+                    if($row["confirmAccount"] === null) {
                         session_start();
                         $_SESSION["user_id"] = $userId; // Stocker l'ID de l'utilisateur dans la session
                         header("Location: /"); // Rediriger vers la page du tableau de bord après la connexion

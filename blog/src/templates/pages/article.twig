@@ -2,10 +2,26 @@
 
 {% block body %}
 
-    <div class="container-fluid m-5 text-center">
+    <div class="container-fluid mt-5 text-center">
         <h1>{{ article.title }}</h1>
         <p>{{ article.content }}</p>
         <p>{{ articles.createdAt|date('d-m-Y') }}</p>
+    </div>
+
+    <div class="container w-50 mt-5 text-center">
+        <form method="post" action="">
+            <textarea class="form-control" name="comment" placeholder="Ajouter un commentaire"></textarea>
+            <button type="submit" class="btn btn-primary mt-5">Ajouter un commentaire</button>
+        </form>
+    </div>
+
+    <div class="container-fluid mt-5 text-center d-flex flex-column justify-content-center align-items-center">
+        {% for i, comment in comments %}
+            <div class="card w-50 mt-5">
+                <p>{{ comment.1 }}</p>
+                <p>Auteur : {{ users[i] }}</p>
+            </div>
+        {% endfor %}
     </div>
 
 {% endblock %}

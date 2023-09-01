@@ -34,6 +34,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->post('/login', [HomeController::class, 'loginUser']);
     $r->get('/logout', [HomeController::class, 'logout']);
     $r->get('/article/{id:\d+}', [HomeController::class, 'getArticle']);
+    $r->post('/article/{id:\d+}', [HomeController::class, 'getArticle']);
     $r->get('/article/modify/{id:\d+}', [HomeController::class, 'modifyArticle']);
     $r->post('/article/modify/{id:\d+}', [HomeController::class, 'modifyArticle']);
 });

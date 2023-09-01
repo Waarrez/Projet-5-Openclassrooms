@@ -3,10 +3,12 @@
 {% block body %}
 
     <div class="container mt-5">
-        <h2>Modifier un article</h2>
+        <h2>Modifier votre article</h2>
         <form method="post" action="">
             <input class="form-control" type="text" name="title" value="{{ article.title }}">
-            <input class="form-control" type="text" name="content" value="{{ article.content }}">
+            <br>
+            <textarea class="form-control"  name="content">{{ article.content }}</textarea>
+            <br>
             <input type="submit" class="btn btn-primary" value="Modifier">
         </form>
 
