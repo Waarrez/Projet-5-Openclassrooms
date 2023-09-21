@@ -7,6 +7,8 @@ class User {
   - password: string
   - confirmAccount : string
   - roles : string
+  - file : string
+  - pdf : string
 }
 
 class Article {
@@ -14,15 +16,16 @@ class Article {
   - title: string
   - content: string
   - publishedAt: datetime
-  - author: User
+  - author: int
 }
 
 class Comment {
   - id: int
   - content: string
   - postedAt: datetime
-  - article: Article
-  - author: User
+  - article: int
+  - author: int
+  - validate : bool
 }
 
 User --> "*" Article
