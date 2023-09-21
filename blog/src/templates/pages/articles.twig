@@ -5,19 +5,24 @@
     <div class="container-fluid m-5 text-center">
         <h1>Liste des articles</h1>
         {% if users %}
-            <a class="btn btn-primary" href="/article/add">Ajouter un article</a>
+            <a class="btn btn-primary mt-5" href="/article/add">Ajouter un article</a>
         {% endif %}
-        {% for articles in article %}
-            <div class="mt-5 text-center">
-                <h2>{{ articles.title }}</h2>
-                <p>{{ articles.content }}</p>
-                <p>Créer le : {{ articles.createdAt|date('d-m-Y') }}</p>
-                <a href="/article/{{ articles.id }}">Voir l'article</a>
-                {% if articles.author_id == users.id %}
-                    <a href="/article/modify/{{ articles.id }}">Modifier l'article</a>
-                {% endif %}
-            </div>
-        {% endfor %}
+        <div class="d-flex justify-content-around mt-5">
+            {% for articles in article %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ articles.title }}</h5>
+                        <hr>
+                        <p class="card-text">Dernière modificatiopn : <br> {{ articles.createdAt|date('d-m-Y') }}</p>
+                        <hr>
+                        <a href="/article/{{ articles.id }}" class="btn btn-primary">Voir l'article</a>
+                        {% if articles.author_id == users.id %}
+                            <a class="btn btn-primary" href="/article/edit/{{ articles.id }}">Modifier l'article</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}

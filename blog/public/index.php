@@ -32,8 +32,10 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->get('/confirmAccount/{test}', [HomeController::class, 'confirmAccount']);
     $r->get('/article/{id:\d+}', [HomeController::class, 'getArticle']);
     $r->post('/article/{id:\d+}', [HomeController::class, 'getArticle']);
-    $r->get('/article/modify/{id:\d+}', [HomeController::class, 'modifyArticle']);
-    $r->post('/article/modify/{id:\d+}', [HomeController::class, 'modifyArticle']);
+    $r->get('/article/edit/{id:\d+}', [HomeController::class, 'editArticle']);
+    $r->post('/article/edit/{id:\d+}', [HomeController::class, 'editArticle']);
+    $r->get('/commentary/approuve/{id:\d+}',[HomeController::class, 'approuveCommentary']);
+    $r->post('/commentary/approuve/{id:\d+}',[HomeController::class, 'approuveCommentary']);
 });
 
 $httpMethod = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_SPECIAL_CHARS);

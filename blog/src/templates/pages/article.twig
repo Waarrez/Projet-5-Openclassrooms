@@ -1,15 +1,22 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-    <div class="container-fluid mt-5 text-center">
-        <h1>{{ article.title }}</h1>
-        <p>{{ article.content }}</p>
-        <p>{{ articles.createdAt|date('d-m-Y') }}</p>
+    <div class="d-flex text-center justify-content-around mt-5">
+        <div class="card" style="width: 25rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ article.title }}</h5>
+                <hr>
+                <p class="card-text">{{ article.content }}</p>
+                <hr>
+                <p class="card-text"><b>Dernière modification :</b> <br>{{ articles.createdAt|date('d-m-Y') }}</p>
+            </div>
+        </div>
     </div>
 
+
     <div class="container w-50 mt-5 text-center">
-        <form method="post" action="">
+        <hr>
+        <form class="mt-5" method="post" action="">
             {% if users %}
             <textarea class="form-control" name="comment" placeholder="Ajouter un commentaire"></textarea>
                 <button type="submit" class="btn btn-primary mt-5">Ajouter un commentaire</button>
@@ -17,12 +24,39 @@
         </form>
     </div>
 
-    <div class="container-fluid mt-5 text-center d-flex flex-column justify-content-center align-items-center">
+    <div class="container-fluid mt-5 mb-5 text-center d-flex flex-column justify-content-center align-items-center">
         {% for i, comment in comments %}
-            <div class="card w-50 mt-5">
-                <p>{{ comment.1 }}</p>
-                <p>Auteur : {{ users[i] }}</p>
-            </div>
+            {% if comment.5 != 0 %}
+                <div class="card w-50 mt-5">
+                    <p class="p-2">{{ comment.1 }}</p>
+                    <hr>
+                    <p class="p-2">Auteur : {{ users[i] }}</p>
+                    {% if article.author_id == users.id %}
+                        {% if comment.5 == 0 %}
+                            <p class="p-2">Auteur : {{ users[i] }}</p>
+                            <hr>
+                            <p class="p-2">{{ comment.1 }}</p>
+                            <hr>
+                            <a class="btn btn-success" href="">Approuver le commentaire</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% else %}
+                    {% if article.author_id == users.id %}
+                        {% if comment.5 == 0 %}
+                        <div class="card w-50 mt-5">
+                            <p class="p-2">Auteur : {{ users[i] }}</p>
+                            <hr>
+                            <p class="p-2">{{ comment.1 }}</p>
+                            <hr>
+                            <div class="w-20 m-5">
+                                <a class="btn btn-success" href="/commentary/approuve/{{ comment.0 }}">Approuver le commentaire</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+
+            {% endif %}
         {% endfor %}
     </div>
 

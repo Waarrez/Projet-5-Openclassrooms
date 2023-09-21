@@ -3,6 +3,7 @@
 namespace Zitro\Blog\Controllers;
 
 use BDD;
+use DateTimeImmutable;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Twig\Environment;
@@ -37,7 +38,6 @@ class HomeController
         $twig->addExtension(new \Twig\Extension\DebugExtension());
 
         $user = null;
-
 
         // Chargement du template
         $template = $twig->load('pages/accueil.twig');
@@ -133,6 +133,18 @@ class HomeController
      */
     public function getArticle($id): void
     {
+        if(isset($_SESSION['user_id'])) {
+            $users = null;
+
+            $idUser = $_SESSION["user_id"];
+
+            $request = $this->bdd->query("SELECT * FROM user WHERE id = '$idUser'");
+
+            $users = $request->fetch_assoc();
+        } else {
+            header('Location: /');
+        }
+
         $loader = new FilesystemLoader('../src/templates');
         $twig = new Environment($loader, [
             'cache' => false,
@@ -142,7 +154,8 @@ class HomeController
 
         $article = null;
         $comments = null;
-        $users = array();
+        $usersList = array();
+
 
         foreach ($id as $identifiant) {
             $result = $this->bdd->query("SELECT * FROM article WHERE id = $identifiant");
@@ -171,7 +184,7 @@ class HomeController
                 $user_id = $_SESSION["user_id"];
                 $article_id = $article["id"];
 
-                $result = $this->bdd->query("INSERT INTO comment (content, postedAt, article_id, author_id) VALUES ('$comment', '$format', '$article_id' ,'$user_id')");
+                $result = $this->bdd->query("INSERT INTO comment (content, postedAt, article_id, author_id, validate) VALUES ('$comment', '$format', '$article_id' ,'$user_id', false)");
                 if($result === TRUE) {
                     header("Location: /article/$article_id");
                 }
@@ -180,13 +193,13 @@ class HomeController
 
         $twig->addExtension(new \Twig\Extension\DebugExtension());
 
-
         $template = $twig->load('pages/article.twig');
 
         echo $template->render([
             'titre' => 'Mon Blog | Articles',
             'article' => $article,
             'comments' => $comments,
+            'user' => $usersList,
             'users' => $users
         ]);
     }
@@ -345,14 +358,26 @@ class HomeController
      */
     public function addArticle(): void
     {
+        if(isset($_SESSION['user_id'])) {
+            $user = null;
+
+            if (isset($_SESSION["user_id"])) {
+                $idUser = $_SESSION["user_id"];
+
+                $request = $this->bdd->query("SELECT * FROM user WHERE id = '$idUser'");
+
+                $user = $request->fetch_assoc();
+            }
+        } else {
+            header('Location: /');
+        }
+
         $loader = new FilesystemLoader('../src/templates');
         $twig = new Environment($loader, [
             'cache' => false,
             'strict_variables' => false,
             'debug' => true,
         ]);
-
-        $titre = "Ajouter un article";
 
         if([$_SERVER["REQUEST_METHOD"] === "POST"]) {
             if (isset($_POST["title"]) && isset($_POST["content"])) {
@@ -369,9 +394,14 @@ class HomeController
             }
         }
 
+        $titre = "Ajouter un article";
+
         $template = $twig->load('pages/add_article.twig');
 
-        echo $template->render(['titre' => $titre]);
+        echo $template->render([
+            'titre' => $titre,
+            'users' => $user
+        ]);
     }
 
     /**
@@ -379,8 +409,20 @@ class HomeController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function modifyArticle($id): void
+    public function editArticle(int $id): void
     {
+        if(isset($_SESSION['user_id'])) {
+            $users = null;
+
+            $idUser = $_SESSION["user_id"];
+
+            $request = $this->bdd->query("SELECT * FROM user WHERE id = '$idUser'");
+
+            $users = $request->fetch_assoc();
+        } else {
+            header('Location: /');
+        }
+
         $loader = new FilesystemLoader('../src/templates');
         $twig = new Environment($loader, [
             'cache' => false,
@@ -408,15 +450,21 @@ class HomeController
         if($_SERVER["REQUEST_METHOD"] === "POST") {
             $title = $_POST["title"];
             $content = $_POST["content"];
+            $date = new DateTimeImmutable();
+            $formatDate = $date->format('Y-m-d');
 
-            $this->bdd->query("UPDATE article SET title = '$title', content = '$content' WHERE id = $idArticle");
+            $this->bdd->query("UPDATE article SET title = '$title', content = '$content', publishedAt = '$formatDate' WHERE id = $idArticle");
             header("Location: /articles"); // Correction ici
             exit(); // Assurez-vous de quitter le script après la redirection
             // Maintenant vous pouvez utiliser $title et $content en toute sécurité
         }
 
         // Afficher le template rendu avec la variable "titre"
-        echo $template->render(['titre' => $titre, 'article' => $article]);
+        echo $template->render([
+            'titre' => $titre,
+            'article' => $article,
+            'users' => $users
+        ]);
     }
 
 
@@ -469,6 +517,15 @@ class HomeController
                 echo "Mauvais compte";
             }
         }
+    }
+
+    public function approuveCommentary($id): void
+    {
+        foreach ($id as $idCommentary) {
+            $this->bdd->query("UPDATE comment set validate = true WHERE id = '$idCommentary'");
+        }
+
+        header('Location: /articles');
     }
 
     public function logout(): void
