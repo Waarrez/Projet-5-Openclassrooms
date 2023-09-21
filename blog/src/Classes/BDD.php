@@ -14,6 +14,8 @@ class BDD
         $this->password = $password;
         $this->dbname = $dbname;
         $this->connect(); // Appelez la méthode connect pour établir la connexion à la base de données
+
+        $this->conn->query("SET NAMES 'utf8mb4'");
     }
 
     private function connect(): void

@@ -3,6 +3,18 @@
 
 {% block body %}
 
-    <h1>Page d'accueil</h1>
+    <div class="container mt-5 text-center">
+        {% if users.username is defined %}
+            <h2>Bonjour {{ users.username }}</h2>
+            <br>
+            <b>{{ users.content }}</b>
+            <br><br><br>
+            <b>Mon CV : </b>
+            <br>
+            <a href="../../../public/uploads/pdf/CVThimote.pdf">Lien vers mon cv</a>
+            <br><br><br>
+            <b>Mes réseaux : </b>
+        {% endif %}
+    </div>
 
 {% endblock %}

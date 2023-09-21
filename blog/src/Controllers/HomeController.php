@@ -3,26 +3,21 @@
 namespace Zitro\Blog\Controllers;
 
 use BDD;
-use JetBrains\PhpStorm\NoReturn;
-use Mail;
 use Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
-use function RectorPrefix202307\dump;
-use function RectorPrefix202307\Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 
 class HomeController
 {
 
     private $bdd;
-    private $mail;
 
-    public function __construct(BDD $bdd, Mail $mail) {
+    public function __construct(BDD $bdd) {
         $this->bdd = $bdd;
-        $this->mail = $mail;
     }
 
     /**
@@ -43,6 +38,7 @@ class HomeController
 
         $user = null;
 
+
         // Chargement du template
         $template = $twig->load('pages/accueil.twig');
 
@@ -58,6 +54,34 @@ class HomeController
         echo $template->render([
             'titre' => 'Mon Blog | Accueil',
             'users' => $user
+        ]);
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    public function admin(): void
+    {
+        $loader = new FilesystemLoader('../src/templates');
+        $twig = new Environment($loader, [
+            'cache' => false,
+            'strict_variables' => false,
+            'debug' => true,
+        ]);
+
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
+
+        $user = null;
+
+        // Chargement du template
+        $template = $twig->load('admin/admin.twig');
+
+
+        // Affichage du template
+        echo $template->render([
+            'titre' => 'Admin | Accueil'
         ]);
     }
 
@@ -149,7 +173,7 @@ class HomeController
 
                 $result = $this->bdd->query("INSERT INTO comment (content, postedAt, article_id, author_id) VALUES ('$comment', '$format', '$article_id' ,'$user_id')");
                 if($result === TRUE) {
-                    header("Location: /");
+                    header("Location: /article/$article_id");
                 }
             }
         }
@@ -216,12 +240,15 @@ class HomeController
             $username = $_POST["username"];
             $password = $_POST["password"];
             $confirmPassword = $_POST["confirmPassword"];
+            $content = $_POST["content"];
+            $file = $_FILES["file"];
+            $filePdf = $_FILES["file_pdf"];
             $roles = "ROLE_USER";
             $confirmAccount  = bin2hex(random_bytes(32));
 
             $hashPassword = password_hash($password, PASSWORD_ARGON2I);
 
-            if(!empty($email) && !empty($username) && !empty($password) && !empty($confirmPassword)) {
+            if(!empty($email) && !empty($username) && !empty($password) && !empty($confirmPassword) && !empty($file)) {
                 $verifyEmail = $this->bdd->query("SELECT * FROM user WHERE email = '$email'");
 
                if($verifyEmail->fetch_all() !== []) {
@@ -230,10 +257,66 @@ class HomeController
                    if($password !== $confirmPassword) {
                        echo "Vos mots de passes doivent correspondre";
                    } else {
-                       $result = $this->bdd->query("INSERT INTO user (email,username,password, confirmAccount , roles) VALUES ('$email', '$username', '$hashPassword', '$confirmAccount' ,'$roles')");
+                       // Vérifier s'il y a eu une erreur lors du téléchargement
+                       if ($file['error'] === UPLOAD_ERR_OK) {
+                           $uploadDir = '../public/uploads/'; // Répertoire où les images seront stockées
+                           $uploadPath = $uploadDir . basename($file['name']);
+
+                           $img = basename($file['name']);
+                           // Déplacer le fichier téléchargé vers le répertoire spécifié
+                           move_uploaded_file($file['tmp_name'], $uploadPath);
+                       } else {
+                           echo "Une erreur s'est produite lors du téléchargement de l'image.";
+                       }
+
+                       // Ajout de la partie pour le PDF
+                       if ($filePdf['error'] === UPLOAD_ERR_OK) {
+                           $uploadPdfDir = '../public/uploads/pdf/'; // Répertoire où les PDF seront stockés
+                           $uploadPdfPath = $uploadPdfDir . basename($filePdf['name']);
+
+                           $pdf = basename($filePdf['name']);
+                           // Déplacer le fichier PDF téléchargé vers le répertoire spécifié
+                           move_uploaded_file($filePdf['tmp_name'], $uploadPdfPath);
+                       } else {
+                           echo "Une erreur s'est produite lors du téléchargement du PDF.";
+                       }
+
+                       $result = $this->bdd->query("INSERT INTO user (email,username,password, confirmAccount , roles, file, pdf , content) VALUES ('$email', '$username', '$hashPassword', '$confirmAccount' ,'$roles', '$img', '$pdf','$content')");
 
                        if($result === TRUE) {
-                            var_dump($this->mail->sendMail($email, $username, $confirmAccount));
+                           $mail = new PHPMailer();
+
+                           try {
+                               // Paramètres du serveur SMTP pour Gmail
+                               $mail->isSMTP();
+                               $mail->Host       = 'smtp.gmail.com';
+                               $mail->SMTPAuth   = true;
+                               $mail->Username   = 'thimote.cabotte6259@gmail.com'; // Votre adresse Gmail complète
+                               $mail->Password   = 'qxdm rcxk xqwe vnjz'; // Mot de passe de votre compte Gmail
+                               $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                               $mail->Port = 465;
+
+                               // Destinataire
+                               $mail->setFrom('thimote.cabotte6259@gmail.com@gmail.com', 'Blog PHP');
+                               $mail->addAddress($email, $username);
+
+                               // Contenu du message
+                               $mail->isHTML(true);
+                               $mail->Subject = 'Activation de votre compte';
+                               $mail->Body = 'Veuillez activer votre compte grâce à ce lien : <a href="http://127.0.0.1:8002/confirmAccount/' . $confirmAccount . '">Cliquez ici</a>';
+                               $mail->AltBody = 'Contenu du message en texte brut (pour les clients ne prenant pas en charge HTML)';
+
+                               // Envoyer l'e-mail
+                               // Envoyer l'e-mail
+                               if ($mail->send()) {
+                                   header("Location: /");
+                               } else {
+                                   echo 'Erreur lors de l\'envoi de l\'e-mail : ' . $mail->ErrorInfo;
+                               }
+                               echo 'L\'e-mail a été envoyé avec succès.';
+                           } catch (Exception $e) {
+                               echo "Une erreur s'est produite lors de l'envoi de l'e-mail : {$mail->ErrorInfo}";
+                           }
                        } else {
                            echo "Erreur lors de l'inscription";
                        }
@@ -255,12 +338,19 @@ class HomeController
         echo $template->render(['titre' => $titre]);
     }
 
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
     public function addArticle(): void
     {
         $loader = new FilesystemLoader('../src/templates');
-        $twig = new Environment($loader);
-
-        $template = $twig->load('pages/add_article.twig');
+        $twig = new Environment($loader, [
+            'cache' => false,
+            'strict_variables' => false,
+            'debug' => true,
+        ]);
 
         $titre = "Ajouter un article";
 
@@ -278,6 +368,8 @@ class HomeController
                 exit();
             }
         }
+
+        $template = $twig->load('pages/add_article.twig');
 
         echo $template->render(['titre' => $titre]);
     }
@@ -360,6 +452,22 @@ class HomeController
             }
 
             $stmt->close();
+        }
+    }
+
+    public function confirmAccount(array $verify): void
+    {
+        foreach ($verify as $token) {
+            $request = $this->bdd->query("SELECT * FROM user WHERE confirmAccount = '$token'");
+            $user = $request->fetch_assoc();
+            $idUser = $user["id"];
+
+            if($user) {
+                $this->bdd->query("UPDATE user set confirmAccount = null WHERE id = '$idUser'");
+                echo "Votre compte est confirmé, pour vous connecter cliquez ici <a href='/login'>Connexion</a>";
+            } else {
+                echo "Mauvais compte";
+            }
         }
     }
 

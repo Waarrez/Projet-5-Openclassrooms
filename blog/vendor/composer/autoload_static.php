@@ -37,6 +37,7 @@ class ComposerStaticInit4ac79e1b66063fde239b0eed1c41af16
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'G' => 
         array (
@@ -73,12 +74,16 @@ class ComposerStaticInit4ac79e1b66063fde239b0eed1c41af16
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -101,7 +106,7 @@ class ComposerStaticInit4ac79e1b66063fde239b0eed1c41af16
     public static $prefixesPsr0 = array (
         'M' => 
         array (
-            'Mail' =>
+            'Mailjet' => 
             array (
                 0 => __DIR__ . '/..' . '/mailjet/mailjet-apiv3-php/src',
             ),
