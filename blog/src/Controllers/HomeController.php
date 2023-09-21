@@ -236,13 +236,13 @@ class HomeController
     public function addUser(): void
     {
         if($_SERVER["REQUEST_METHOD"] === "POST") {
-            $email = $_POST["email"];
-            $username = $_POST["username"];
-            $password = $_POST["password"];
-            $confirmPassword = $_POST["confirmPassword"];
-            $content = $_POST["content"];
-            $file = $_FILES["file"];
-            $filePdf = $_FILES["file_pdf"];
+            $email = $_POST["email"] ?? null;
+            $username = $_POST["username"] ?? null;
+            $password = $_POST["password"] ?? null;
+            $confirmPassword = $_POST["confirmPassword"] ?? null;
+            $content = $_POST["content"] ?? null;
+            $file = $_FILES["file"] ?? null;
+            $filePdf = $_FILES["file_pdf"] ?? null;
             $roles = "ROLE_USER";
             $confirmAccount  = bin2hex(random_bytes(32));
 
