@@ -21,18 +21,12 @@ class BDD
     private function connect(): void
     {
         $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
-        if ($this->conn->connect_error) {
-            die("La connexion à la base de données a échoué : " . $this->conn->connect_error);
-        }
     }
 
     // Méthode pour exécuter une requête SQL
-    public function query($sql) {
-        $result = $this->conn->query($sql);
-        if (!$result) {
-            die("Erreur lors de l'exécution de la requête : " . $this->conn->error);
-        }
-        return $result;
+    public function query($sql): mysqli_result|bool
+    {
+        return $this->conn->query($sql);
     }
 
     // Méthode pour fermer la connexion

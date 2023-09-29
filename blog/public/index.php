@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Zitro\Blog\Controllers\HomeController;
+use Zitro\Blog\Controllers\AdminController;
 
 // Inclure la classe BDD si elle n'est pas déjà incluse
 require_once '../src/Classes/BDD.php';
@@ -22,8 +23,8 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute('GET', '/articles', [HomeController::class, 'articles']);
     $r->addRoute('GET', '/login', [HomeController::class, 'login']);
     $r->addRoute('GET', '/register', [HomeController::class, 'register']);
-    $r->addRoute('GET', '/admin', [HomeController::class, 'admin']);
     $r->addRoute('GET', '/confirmAccount', [HomeController::class, 'confirmAccount']);
+    $r->addRoute('GET', '/admin', [AdminController::class, 'indexAdmin']);
     $r->post('/register', [HomeController::class, 'addUser']);
     $r->get('/article/add', [HomeController::class, 'addArticle']);
     $r->post('/article/add', [HomeController::class, 'addArticle']);
@@ -37,6 +38,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->get('/commentary/approuve/{id:\d+}',[HomeController::class, 'approuveCommentary']);
     $r->post('/commentary/approuve/{id:\d+}',[HomeController::class, 'approuveCommentary']);
 });
+
 
 $httpMethod = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_SPECIAL_CHARS);
 $uri = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_SPECIAL_CHARS);
