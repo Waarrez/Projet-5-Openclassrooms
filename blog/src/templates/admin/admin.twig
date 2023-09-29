@@ -3,7 +3,7 @@
 {% block body %}
 
     <div class="container mt-5 text-center">
-        <h2>Derniers articles</h2>
+        <h2>Articles</h2>
 
         <div class="d-flex justify-content-around mt-5">
             {% for article in articles %}
@@ -13,9 +13,31 @@
                         <hr>
                         <p class="card-text">Dernière modificatiopn : <br> {{ article.createdAt|date('d-m-Y') }}</p>
                         <hr>
-                        <div class="d-flex justify-content-center">
-                            <a class="btn btn-primary btn-sm" href="/article/edit/{{ articles.id }}">Modifier l'article</a>
-                            <a class="btn btn-danger btn-sm" href="">Supprimer l'article</a>
+                        <div class="d-flex justify-content-around">
+                            <a class="btn btn-primary btn-md" href="/admin/article/{{ article.id }}">Modifier</a>
+                            <a class="btn btn-danger btn-md" href="/delete/article/{{ article.id }}">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container mt-5 text-center">
+        <h2>Utilisateurs</h2>
+
+        <div class="d-flex justify-content-around mt-5">
+            {% for user in allUsers %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.username }}</h5>
+                        <hr>
+                        <p class="card-text">{{ user.email }}</p>
+                        <hr>
+                        <p class="card-text">Grade : {{ user.roles }}</p>
+                        <hr>
+                        <div class="d-flex justify-content-around">
+                            <a class="btn btn-danger" href="/delete/user/{{ user.id }}">Supprimer</a>
                         </div>
                     </div>
                 </div>

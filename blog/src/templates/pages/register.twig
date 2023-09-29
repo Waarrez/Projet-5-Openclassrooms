@@ -4,42 +4,57 @@
 
 
 
-    <div class="container text-center">
+    <div class="container text-center mt-5">
         <h1>Inscription</h1>
         <form action="/register" method="post" enctype="multipart/form-data">
-            <div class="form-group mt-5">
-                <label>Adresse mail
-                    <input class="form-control" type="email" placeholder="Votre nom d'utilisateur" name="email" required>
-                </label>
+            <div class="d-flex justify-content-around">
+                <div class="form-group mt-5">
+                    <label>Adresse mail
+                        <input class="form-control" type="email" placeholder="Votre nom d'utilisateur" name="email" required>
+                    </label>
+                </div>
+                <div class="form-group mt-5">
+                    <label>Nom d'utilisateur
+                        <input class="form-control" type="text" placeholder="Votre nom d'utilisateur" name="username" required>
+                    </label>
+                </div>
+                <div class="form-group mt-5">
+                    <label>Mot de passe
+                        <input class="form-control" type="password" placeholder="Votre nom d'utilisateur" name="password" required>
+                    </label>
+                </div>
+                <div class="form-group mt-5">
+                    <label>Confirmer mot de passe
+                        <input class="form-control" type="password" placeholder="Confirmer mot de passe" name="confirmPassword" required>
+                    </label>
+                </div>
             </div>
-            <div class="form-group mt-5">
-                <label>Nom d'utilisateur
-                    <input class="form-control" type="text" placeholder="Votre nom d'utilisateur" name="username" required>
-                </label>
+            <div class="d-flex justify-content-around">
+                <div class="form-group mt-5">
+                    <label>Phrase d'accroche
+                        <input class="form-control" type="text" placeholder="Ajouter une phrase d'accroche..." name="content" required>
+                    </label>
+                </div>
+                <div class="form-group mt-5">
+                    <label>Image de profil
+                        <input class="form-control" type="file" name="file" id="file">
+                    </label>
+                </div>
+                <div class="form-group mt-5">
+                    <label>Votre CV
+                        <input class="form-control" type="file" name="file_pdf" id="file_pdf">
+                    </label>
+                </div>
             </div>
-            <div class="form-group mt-5">
-                <label>Mot de passe
-                    <input class="form-control" type="password" placeholder="Votre nom d'utilisateur" name="password" required>
+            <div class="d-flex justify-content-around mt-5 p-2">
+                <label>Twitter
+                    <input placeholder="lien vers votre profil..." class="form-control" type="text" name="twitter" id="file_pdf">
                 </label>
-            </div>
-            <div class="form-group mt-5">
-                <label>Confirmer mot de passe
-                    <input class="form-control" type="password" placeholder="Confirmer mot de passe" name="confirmPassword" required>
+                <label>Github
+                    <input placeholder="lien vers votre profil..." class="form-control" type="text" name="github" id="file_pdf">
                 </label>
-            </div>
-            <div class="form-group mt-5">
-                <label>Phrase d'accroche
-                    <input class="form-control" type="text" placeholder="Ajouter une phrase d'accroche..." name="content" required>
-                </label>
-            </div>
-            <div class="form-group mt-5">
-                <label>Image de profil
-                    <input class="form-control" type="file" name="file" id="file">
-                </label>
-            </div>
-            <div class="form-group mt-5">
-                <label>Votre CV
-                    <input class="form-control" type="file" name="file_pdf" id="file_pdf">
+                <label>Linkedin
+                    <input placeholder="lien vers votre profil..." class="form-control" type="text" name="linkedin" id="file_pdf">
                 </label>
             </div>
             <div class="form-group mt-5">

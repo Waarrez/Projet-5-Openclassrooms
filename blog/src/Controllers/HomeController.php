@@ -50,6 +50,47 @@ class HomeController
             $user = $request->fetch_assoc();
         }
 
+        if(isset($_POST['view'])) {
+            header("Content-type: application/pdf");
+            readfile('.');
+        }
+
+        if(isset($_POST['firstName']) && isset($_POST['content'])) {
+            $mail = new PHPMailer();
+            try {
+                // Paramètres du serveur SMTP pour Gmail
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'thimote.cabotte6259@gmail.com'; // Votre adresse Gmail complète
+                $mail->Password   = 'qxdm rcxk xqwe vnjz'; // Mot de passe de votre compte Gmail
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port = 465;
+
+                // Destinataire
+                $mail->setFrom('thimote.cabotte6259@gmail.com@gmail.com', 'Blog PHP');
+                $mail->addAddress("thimote.cabotte6259@gmail.com");
+
+                // Contenu du message
+                $mail->isHTML(true);
+                $mail->Subject = 'Contact blog PHP';
+                $mail->Body = 'Nouveau message de '.$_POST["firstName"].'<br>'.$_POST["content"];
+                $mail->AltBody = 'Contenu du message en texte brut (pour les clients ne prenant pas en charge HTML)';
+
+                // Envoyer l'e-mail
+                // Envoyer l'e-mail
+                if ($mail->send()) {
+                    echo "Le message est bien envoyé";
+                    header("Location: /");
+                } else {
+                    echo 'Erreur lors de l\'envoi de l\'e-mail : ' . $mail->ErrorInfo;
+                }
+                echo 'L\'e-mail a été envoyé avec succès.';
+            } catch (Exception $e) {
+                echo "Une erreur s'est produite lors de l'envoi de l'e-mail : {$mail->ErrorInfo}";
+            }
+        }
+
         // Affichage du template
         echo $template->render([
             'titre' => 'Mon Blog | Accueil',
@@ -254,6 +295,9 @@ class HomeController
             $password = $_POST["password"] ?? null;
             $confirmPassword = $_POST["confirmPassword"] ?? null;
             $content = $_POST["content"] ?? null;
+            $twitter = $_POST["twitter"] ?? null;
+            $github = $_POST["github"] ?? null;
+            $linkedin = $_POST["linkedin"] ?? null;
             $file = $_FILES["file"] ?? null;
             $filePdf = $_FILES["file_pdf"] ?? null;
             $roles = "ROLE_USER";
@@ -296,7 +340,7 @@ class HomeController
                            echo "Une erreur s'est produite lors du téléchargement du PDF.";
                        }
 
-                       $result = $this->bdd->query("INSERT INTO user (email,username,password, confirmAccount , roles, file, pdf , content) VALUES ('$email', '$username', '$hashPassword', '$confirmAccount' ,'$roles', '$img', '$pdf','$content')");
+                       $result = $this->bdd->query("INSERT INTO user (email,username,password, confirmAccount , roles, file, pdf , content, twitter, github, linkedin) VALUES ('$email', '$username', '$hashPassword', '$confirmAccount' ,'$roles', '$file', '$pdf','$content', '$twitter', '$github', '$linkedin')");
 
                        if($result === TRUE) {
                            $mail = new PHPMailer();
@@ -411,7 +455,7 @@ class HomeController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function editArticle(int $id): void
+    public function editArticle($id): void
     {
         if(isset($_SESSION['user_id'])) {
             $users = null;

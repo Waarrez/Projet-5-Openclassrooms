@@ -3,3 +3,8 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
+
+<FilesMatch "^uploads/.*\.pdf$">
+  Order Allow,Deny
+  Allow from all
+</FilesMatch>
