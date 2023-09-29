@@ -53,6 +53,8 @@ class AdminController
             if($user['roles'] !== "ROLE_ADMIN") {
                 header('Location: /');
             }
+        } else {
+            header('Location: /');
         }
 
         $result = $this->bdd->query("SELECT * FROM article");

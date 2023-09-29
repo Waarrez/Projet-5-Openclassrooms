@@ -34,7 +34,11 @@
                         <hr>
                         <p class="card-text">{{ user.email }}</p>
                         <hr>
-                        <p class="card-text">Grade : {{ user.roles }}</p>
+                        {% if user.roles == "ROLE_USER" %}
+                            <span class="badge bg-primary">Utilisateur</span>
+                        {% else %}
+                            <span class="badge bg-success">Administrateur</span>
+                        {% endif %}
                         <hr>
                         <div class="d-flex justify-content-around">
                             <a class="btn btn-danger" href="/delete/user/{{ user.id }}">Supprimer</a>
