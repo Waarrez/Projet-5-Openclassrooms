@@ -3,7 +3,11 @@
 namespace Zitro\Blog\Controllers;
 
 use BDD;
+use Zitro\Blog\Classes\SessionManager;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
 
 class AdminController
@@ -14,6 +18,11 @@ class AdminController
         $this->bdd = $bdd;
     }
 
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
     public function indexAdmin(): void
     {
         $loader = new FilesystemLoader('../src/templates');
@@ -30,18 +39,29 @@ class AdminController
         // Chargement du template
         $template = $twig->load('admin/admin.twig');
 
+        $idUser = SessionManager::get("user_id");
+        // Chargement du template
+        $template = $twig->load('admin/admin.twig');
+
         if (isset($_SESSION["user_id"])) {
-            $idUser = $_SESSION["user_id"];
 
             $request = $this->bdd->query("SELECT * FROM user WHERE id = '$idUser'");
 
             $user = $request->fetch_assoc();
+
+            if($user['roles'] !== "ROLE_ADMIN") {
+                header('Location: /');
+            }
         }
+
+        $result = $this->bdd->query("SELECT * FROM article");
+        $articles = $result->fetch_all(MYSQLI_ASSOC);
 
         // Affichage du template
         echo $template->render([
             'titre' => 'Mon Blog | Admin',
-            'users' => $user
+            'users' => $user,
+            'articles' => $articles
         ]);
     }
 }
