@@ -270,12 +270,14 @@ class HomeController
                    if($password !== $confirmPassword) {
                        echo "Vos mots de passes doivent correspondre";
                    } else {
-                       // Vérifier s'il y a eu une erreur lors du téléchargement
                        if ($file['error'] === UPLOAD_ERR_OK) {
                            $uploadDir = '../public/uploads/'; // Répertoire où les images seront stockées
-                           $uploadPath = $uploadDir . basename($file['name']);
 
-                           $img = basename($file['name']);
+                           // Utiliser le nom d'utilisateur (ou un autre identifiant unique) pour rendre le nom de fichier unique
+                           $uniqueFileName = $username . '_' . basename($file['name']);
+
+                           $uploadPath = $uploadDir . $uniqueFileName;
+
                            // Déplacer le fichier téléchargé vers le répertoire spécifié
                            move_uploaded_file($file['tmp_name'], $uploadPath);
                        } else {
@@ -471,35 +473,37 @@ class HomeController
     public function loginUser(): void
     {
         if($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = $_POST["email"];
-            $password = $_POST["password"];
+           if(isset($_POST["email"]) && isset($_POST["password"])) {
+               $email = $_POST["email"];
+               $password = $_POST["password"];
 
-            $stmt = $this->bdd->query("SELECT * FROM user WHERE email = '$email'");
+               $stmt = $this->bdd->query("SELECT * FROM user WHERE email = '$email'");
 
-            if ($stmt->num_rows === 1) {
-                $row = $stmt->fetch_assoc();
-                $userId = $row["id"];
-                $hashPasswordFromDatabase = $row["password"];
+               if ($stmt->num_rows === 1) {
+                   $row = $stmt->fetch_assoc();
+                   $userId = $row["id"];
+                   $hashPasswordFromDatabase = $row["password"];
 
-                // Vérifier le mot de passe
-                if (password_verify($password, $hashPasswordFromDatabase)) {
-                    if($row["confirmAccount"] === null) {
-                        session_start();
-                        $_SESSION["user_id"] = $userId; // Stocker l'ID de l'utilisateur dans la session
-                        header("Location: /"); // Rediriger vers la page du tableau de bord après la connexion
-                    } else {
-                        echo "Veuillez confirmer votre compte, un email à été envoyé";
-                    }
-                } else {
-                    // Mot de passe incorrect
-                    echo "Mot de passe incorrect.";
-                }
-            } else {
-                // L'utilisateur n'existe pas
-                echo "Utilisateur non trouvé.";
-            }
+                   // Vérifier le mot de passe
+                   if (password_verify($password, $hashPasswordFromDatabase)) {
+                       if($row["confirmAccount"] === null) {
+                           session_start();
+                           $_SESSION["user_id"] = $userId; // Stocker l'ID de l'utilisateur dans la session
+                           header("Location: /"); // Rediriger vers la page du tableau de bord après la connexion
+                       } else {
+                           echo "Veuillez confirmer votre compte, un email à été envoyé";
+                       }
+                   } else {
+                       // Mot de passe incorrect
+                       echo "Mot de passe incorrect.";
+                   }
+               } else {
+                   // L'utilisateur n'existe pas
+                   echo "Utilisateur non trouvé.";
+               }
 
-            $stmt->close();
+               $stmt->close();
+           }
         }
     }
 
@@ -525,7 +529,9 @@ class HomeController
             $this->bdd->query("UPDATE comment set validate = true WHERE id = '$idCommentary'");
         }
 
-        header('Location: /articles');
+        header('Location: /articles 
+        
+        ');
     }
 
     public function logout(): void
