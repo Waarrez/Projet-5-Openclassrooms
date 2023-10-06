@@ -52,7 +52,7 @@ class HomeController
 
         if(isset($_POST['view'])) {
             header("Content-type: application/pdf");
-            readfile('.');
+            readfile('../../../public/uploads/pdf/cv.pdf');
         }
 
         if(isset($_POST['firstName']) && isset($_POST['content'])) {
